@@ -1,3 +1,4 @@
+let filter = "all";
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 
 function saveTransactions() {
@@ -35,6 +36,7 @@ function renderTransactions() {
   const balanceEl = document.getElementById("balance");
   const incomeEl = document.getElementById("income");
   const expenseEl = document.getElementById("expense");
+  const searchValue = document.getElementById("searchInput").value.toLowerCase();
 
   list.innerHTML = "";
 
@@ -42,6 +44,9 @@ function renderTransactions() {
   let expense = 0;
 
   transactions.forEach((transaction, index) => {
+    if (filter !== "all" && transaction.type !== filter) return;
+    if (!transaction.title.toLowerCase().includes(searchValue)) return;
+
     if (transaction.type === "income") {
       income += transaction.amount;
     } else {
@@ -75,3 +80,14 @@ function deleteTransaction(index) {
 }
 
 renderTransactions();
+
+function setFilter(type) {
+  filter = type;
+  renderTransactions();
+}
+
+function clearAll() {
+  transactions = [];
+  saveTransactions();
+  renderTransactions();
+}
